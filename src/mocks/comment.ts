@@ -1,5 +1,5 @@
 import {faker} from '@faker-js/faker';
-import {CommentData} from '../types/comment.ts';
+import {CommentData, CommentPost} from '../types/comment.ts';
 
 export const getMockComment = (): CommentData => ({
   id: faker.string.uuid(),
@@ -11,4 +11,9 @@ export const getMockComment = (): CommentData => ({
     avatarUrl: faker.image.avatar(),
     isPro: faker.datatype.boolean(),
   },
+});
+
+export const getMockCommentPost = (): CommentPost => ({
+  comment: faker.lorem.words(),
+  rating: faker.number.int({ min: 1, max: 5 }),
 });
