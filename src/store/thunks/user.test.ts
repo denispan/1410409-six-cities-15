@@ -7,8 +7,8 @@ import {Action} from 'redux';
 import {AppThunkDispatch, extractActionsTypes} from '../../mocks/store.ts';
 import {APIRoute} from '../../const.ts';
 import {fetchCommentsAction} from './comments.ts';
-import {checkAuthAction} from './user.ts';
-import {getMockUserInfo} from '../../mocks/user.ts';
+import {checkAuthAction, loginAction, logoutAction} from './user.ts';
+import {getMockUserAuthData, getMockUserInfo} from '../../mocks/user.ts';
 
 describe('Async actions user', () => {
   const axios = createAPI();
@@ -56,4 +56,68 @@ describe('Async actions user', () => {
     });
   });
 
+  describe('loginAction', () => {
+    it('should dispatch "loginAction.pending" and "loginAction.fulfilled" with thunk "loginAction"', async () => {
+      const mockUserAuthData = getMockUserAuthData();
+      const mockUserInfo = getMockUserInfo(mockUserAuthData.email);
+      mockAxiosAdapter.onPost(APIRoute.Login).reply(200, mockUserInfo);
+
+      await store.dispatch(loginAction(mockUserAuthData));
+
+      const emittedActions = store.getActions();
+      const extractedActionsTypes = extractActionsTypes(emittedActions);
+      const loginActionFulfilled = emittedActions.at(1) as ReturnType<typeof loginAction.fulfilled>;
+
+      expect(extractedActionsTypes).toEqual([
+        loginAction.pending.type,
+        loginAction.fulfilled.type,
+      ]);
+
+      expect(loginActionFulfilled.payload)
+        .toEqual(mockUserInfo);
+    });
+
+    it('should dispatch "loginAction.pending" and "loginAction.rejected" when server response 400', async () => {
+      const mockUserAuthData = getMockUserAuthData();
+      mockAxiosAdapter.onPost(APIRoute.Login).reply(400);
+
+      await store.dispatch(loginAction(mockUserAuthData));
+      const actions = extractActionsTypes(store.getActions());
+
+      expect(actions).toEqual([
+        loginAction.pending.type,
+        loginAction.rejected.type,
+      ]);
+    });
+  });
+
+  describe('logoutAction', () => {
+    //todo
+
+    // it('should dispatch "logoutAction.pending" and "logoutAction.fulfilled" with thunk "logoutAction"', async () => {
+    //   mockAxiosAdapter.onPost(APIRoute.Logout).reply(204);
+    //
+    //   await store.dispatch(logoutAction());
+    //
+    //   const emittedActions = store.getActions();
+    //   const extractedActionsTypes = extractActionsTypes(emittedActions);
+    //
+    //   expect(extractedActionsTypes).toEqual([
+    //     logoutAction.pending.type,
+    //     logoutAction.fulfilled.type,
+    //   ]);
+    // });
+
+    it('should dispatch "logoutAction.pending" and "logoutAction.rejected" when server response 400', async () => {
+      mockAxiosAdapter.onPost(APIRoute.Logout).reply(400);
+
+      await store.dispatch(logoutAction());
+      const actions = extractActionsTypes(store.getActions());
+
+      expect(actions).toEqual([
+        logoutAction.pending.type,
+        logoutAction.rejected.type,
+      ]);
+    });
+  });
 });
