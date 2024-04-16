@@ -6,6 +6,7 @@ import {store} from './store';
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {TOAST_AUTO_CLOSE_TIME} from './const.ts';
+import './polyfills';
 import {userActions} from './store/slices/user.ts';
 import {getToken} from './services/token.ts';
 
