@@ -2,6 +2,7 @@
   "name": "six-cities",
   "version": "14.0.0",
   "type": "module",
+  "homepage": "https://denpan.github.io/six-cities/",
   "scripts": {
     "start": "vite",
     "build": "vite build",
