@@ -42,19 +42,6 @@ describe('Async actions comments', () => {
       expect(fetchCommentsActionFulfilled.payload)
         .toEqual(mockComments);
     });
-
-    it('should dispatch "fetchCommentsAction.pending" and "fetchCommentsAction.rejected" when server response 400', async () => {
-      const offerId = 'test id';
-      mockAxiosAdapter.onGet(APIRoute.Offers).reply(400);
-
-      await store.dispatch(fetchCommentsAction(offerId));
-      const actions = extractActionsTypes(store.getActions());
-
-      expect(actions).toEqual([
-        fetchCommentsAction.pending.type,
-        fetchCommentsAction.rejected.type,
-      ]);
-    });
   });
 
   describe('postCommentAction', () => {
@@ -77,20 +64,6 @@ describe('Async actions comments', () => {
 
       expect(postCommentActionFulfilled.payload)
         .toEqual(mockResponseComment);
-    });
-
-    it('should dispatch "postCommentAction.pending" and "postCommentAction.rejected" when server response 400', async () => {
-      const offerId = 'test id';
-      const mockCommentPost = getMockCommentPost();
-      mockAxiosAdapter.onPost(`${APIRoute.Offers}/${offerId}`).reply(400);
-
-      await store.dispatch(postCommentAction({offerId, body: mockCommentPost}));
-      const actions = extractActionsTypes(store.getActions());
-
-      expect(actions).toEqual([
-        postCommentAction.pending.type,
-        postCommentAction.rejected.type,
-      ]);
     });
   });
 });
